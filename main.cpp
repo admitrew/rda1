@@ -56,7 +56,7 @@ void bit_invert() {
 	std::cin >> number >> bit;
 	function(number, bit);
 	std::cout << "dec  oct  hex\n";
-	std::cout << number << std::oct << ' ' << number << std::hex << ' ' << number;
+	std::cout << number << std::oct << ' ' << number << std::hex << ' ' << number << std::dec << '\n';
 }
 
 /**
