@@ -1,109 +1,59 @@
 #include <iostream>
+#include <cmath>
+#include <vector>
 #include <algorithm>
 
 /**
- *  @brief Функция, конвертирующая 10-ичное число в число с base-ичной СС
+ * @brief Функция, складывающая два числа-вектора
  * 
- * 	@param base Система счисления, в которую нужно преобразовать число
- *  @param number Исходное десятичное число, которое нужно преобразовать
- *  
- *  @return Функция возвращает строку, в которой с помощью цифр и латинских букв записано преобразованное число в base-ичной СС
- **/
-std::string convertatsia(int base, int number) { // обращаемся к параметрам по значению
-	std::string str = "0123456789abcdef", answer;
-	for (int i = 0; number > 0; ++i) { // перевод в base-ичную систему счисления
-		int x = number % base;
-		answer += str[x];
-		number /= base;
-	} 
-    std::reverse(answer.begin(), answer.end());
-	return answer;
-}
-
-/**
- * @brief Подпрограмма для конвертации чисел из 10-ичной СС в base-ичную СС
- **/
-void num_convert() {
-	setlocale(LC_ALL, "russian");
-	std::cout << "Введите основание системы base (2<=base<=16): ";
-	int base; std::cin >> base;
-	std::cout << "Введите число в 10-ичной системе счисления: ";
-	int number; std::cin >> number;
-	std::cout << number << '(' << 10 << ')' << " = "; // вывод числа
-	for (auto& i : convertatsia(base, number)) std::cout << i; // вводим в параметры основание системы и 10-ичное число
-	std::cout << '(' << base << ')' << '\n';
-}
-
-/**
- * @brief Функция, выполняющая инвертацию бита в числе
+ * @param vec1 Первое число-вектор
+ * @param vec2 Второе число-вектор
+ * @param sz Размер большего массива
  * 
- * @param number Число, подлежащее изменению
- * @param bit Номер бита, подлежащего инвертации
- * 
- * @return Функция не возвращает значение (тип void), но изменяет number напрямую через ссылку
-**/
-void function(int& number, int bit) { // передаём number по ссылке
-	int mask = (1 << bit);
-	number = (number ^ mask);
-}
-/**
- * @brief Подпрограмма, инвертирующая бит под номером bit в числе number
+ * @return Возвращает вектор-сумму
 */
-void bit_invert() {
-	setlocale(LC_ALL, "russian");
-	int number, bit;
-	std::cout << "Введите число number и номер бита bit: ";
-	std::cin >> number >> bit;
-	function(number, bit);
-	std::cout << "dec  oct  hex\n";
-	std::cout << number << std::oct << ' ' << number << std::hex << ' ' << number << std::dec << '\n';
+std::vector <int> vecsum(std::vector <int> vec1, std::vector <int> vec2, int sz){
+    std::vector <int> resultvector; // число-вектор с результатом
+    resultvector.push_back(0);
+    resultvector[0]=(vec1[0]+vec2[0])%10;
+    int md=(vec1[0]+vec2[0])/10; // переменная остатка
+    for (int i=1; md>0 || i<sz; ++i){
+        vec1.push_back(0);
+        vec2.push_back(0);
+        resultvector.push_back(0);
+
+        resultvector[i]=(vec1[i]+vec2[i]+md)%10;    
+        md=(vec1[i]+vec2[i]+md)/10;
+    }
+    return resultvector;
 }
 
 /**
- * @brief Функция пузырьковой сортировки по убыванию на массиве arr
+ * @brief Функция для вывода чисел-векторов на экран
  * 
- * @param arr Указатель на массив
- * @param arrsize Размер массива arr
+ * @param vec Принимает на вход число-вектор, подлежащее выводу на экран
+ * @param sz Принимает размер числа-вектора
  * 
- * @return Функция не возвращает ничего (тип void), но изменяет сам массив arr через указатель
+ * @return Выводит в терминал число-вектор
 */
-void BubbleSort(int* arr, int arrsize) { // обращаемся к массиву с помощью указателя на него
-	for (int i = 0; i < arrsize - 1; i++) { // сортировка пузырьком по убыванию
-		for (int j = 0; j < arrsize - i - 1; j++) {
-			if (arr[j] < arr[j + 1]) {
-				std::swap(arr[j], arr[j + 1]);
-			}
-		}
-	}
+void print(std::vector <int> vec, int sz){
+    for (int i=sz-1; i>=0; --i){
+        std::cout << vec[i];
+    } std::cout << '\n';
 }
 
-/**
- * @brief Подпрограмма, реализующая пузырьковую сортировку по убыванию на случайном массиве размера number
-*/
-void arr_sorting() {
-	setlocale(LC_ALL, "russian");
-	int number;
-	std::cout << "Введите размер массива: ";
-	std::cin >> number;
-	int* arr = new int[number];
-	int ans = 0;
-	for (int i = 0; i < number; i++) {
-		arr[i] = rand() % 20;
-	}
-	std::cout << "Неотсортированный массив: ";
-	for (int i = 0; i < number; ++i) std::cout << arr[i] << ' ';
-	BubbleSort(arr, number); // вводим в параметры массив и его размер
-	std::cout << '\n' << "Отсортированный массив: ";
-	for (int i = 0; i < number; ++i) std::cout << arr[i] << ' ';
-	delete[] arr;
-}
-
-/**
- * @brief Главная функция программы, с которой мы вызываем остальные подпрограммы
-*/
-int main(){
-	num_convert();
-	bit_invert();
-	arr_sorting();
-	return 0;
+int main() {
+    setlocale(LC_ALL, "russian");
+    int x,y; // две степени из исходных данных
+    std::cin >> x >> y;
+    std::vector <int> vec1={2}, vec2={2};
+    for (int i=0; i<x-1; ++i){
+        vec1 = vecsum(vec1, vec1, vec1.size());
+    }
+    for (int i=0; i<y-1; ++i){
+        vec2 = vecsum(vec2, vec2, vec2.size());
+    }
+    std::vector <int> vecanswer = vecsum(vec1, vec2, std::max(vec1.size(),vec2.size()));
+    print(vecanswer, (int)vecanswer.size());
+    return 0;
 }
