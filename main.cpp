@@ -1,59 +1,111 @@
-#include <iostream>
-#include <cmath>
-#include <vector>
-#include <algorithm>
+    #include <iostream>
+    #include <cmath>
+    #include <vector>
+    #include <string>
+    #include <algorithm>
 
-/**
- * @brief Функция, складывающая два числа-вектора
- * 
- * @param vec1 Первое число-вектор
- * @param vec2 Второе число-вектор
- * @param sz Размер большего массива
- * 
- * @return Возвращает вектор-сумму
-*/
-std::vector <int> vecsum(std::vector <int> vec1, std::vector <int> vec2, int sz){
-    std::vector <int> resultvector; // число-вектор с результатом
-    resultvector.push_back(0);
-    resultvector[0]=(vec1[0]+vec2[0])%10;
-    int md=(vec1[0]+vec2[0])/10; // переменная остатка
-    for (int i=1; md>0 || i<sz; ++i){
-        vec1.push_back(0);
-        vec2.push_back(0);
-        resultvector.push_back(0);
-
-        resultvector[i]=(vec1[i]+vec2[i]+md)%10;    
-        md=(vec1[i]+vec2[i]+md)/10;
+    /**
+     * @brief Функция, проверяющая строку s на акронимичность к тексту text 
+     * 
+     * @param s Входная строка 
+     * @param text Вектор со словами
+     * @param sz Размер вектора
+     * 
+     * @return Возвращает результат проверки
+    */
+    bool acronym(std::string s, std::vector <std::string> text, int sz){
+        for (int i=0; i<sz; ++i){
+            if (s[i]!=text[i][0]){
+                return false;
+            }
+        }
+        return true;
     }
-    return resultvector;
-}
 
-/**
- * @brief Функция для вывода чисел-векторов на экран
- * 
- * @param vec Принимает на вход число-вектор, подлежащее выводу на экран
- * @param sz Принимает размер числа-вектора
- * 
- * @return Выводит в терминал число-вектор
-*/
-void print(std::vector <int> vec, int sz){
-    for (int i=sz-1; i>=0; --i){
-        std::cout << vec[i];
-    } std::cout << '\n';
-}
+    /** 
+     * @brief Функция, возвращающая минимальное необходимое количество действий, чтобы s1 и s2 стали анаграммами по отношению друг к другу
+     *  
+     * @param s1 Первая строка
+     * @param s2 Вторая строка
+     *  
+     * @return Возвращает минимальное необходимое количество операций
+    */  
+    int anagram(std::string s1, std::string s2){
+        int cnts1[26]={0};
+        int cnts2[26]={0};
+        for (int i=0; i<(int)s1.size(); ++i){
+            cnts1[s1[i]-'a']++;
+        }
+        for (int i=0; i<(int)s2.size(); ++i){
+            cnts2[s2[i]-'a']++;
+        }
+        int ans=0;
+        for (int i=0; i<(int)s1.size(); ++i){
+            ans+=abs(cnts1[i]-cnts2[i]);
+        }
+        return ans;
+    }
 
-int main() {
-    setlocale(LC_ALL, "russian");
-    int x,y; // две степени из исходных данных
-    std::cin >> x >> y;
-    std::vector <int> vec1={2}, vec2={2};
-    for (int i=0; i<x-1; ++i){
-        vec1 = vecsum(vec1, vec1, vec1.size());
+    /** 
+     * @brief Функция, возвращающая максимальный счёт vecint среди множества слов vecstr, сформированных из вектора vecchar
+     *  
+     * @param vecstr Вектор строк, определяющий множество строк
+     * @param vecchar Вектор символов, определяющий множество символов
+     * @param vecint Вектор подсчёта с целочисленными значениями, определяющий счёт за каждый символ в слове
+     * 
+     * @return Возвращает максимальный счёт среди множества слов
+    */  
+    int counting(std::vector <std::string> vecstr, std::vector <char> vecchar, std::vector <int> vecint){
+        int cntchar[26]={0};
+        int maxans=0;
+        for (int i=0; i<(int)vecchar.size(); ++i){
+            cntchar[vecchar[i]-'a']++;
+        }
+        for (size_t i=0; i<vecstr.size(); ++i){
+            bool fl=true;
+            std::string word = vecstr[i];
+            int cntstr[26]={0};
+            for (int j=0; j<(int)word.size(); ++j){
+                cntstr[word[j]-'a']++;
+            }
+            
+            for (int k=0; k<26; ++k){
+                if (cntchar[k]<cntstr[k]){
+                    fl=false;
+                    break;
+                }
+            }
+
+            if (!fl){
+                continue;
+            }
+
+            int ans=0;
+            for (int j=0; j<(int)word.size(); ++j){
+                ans+=vecint[word[j]-'a'];
+            }
+
+            if (maxans<ans) maxans=ans;
+        }
+        return maxans;
     }
-    for (int i=0; i<y-1; ++i){
-        vec2 = vecsum(vec2, vec2, vec2.size());
+
+    int main() {
+        setlocale(LC_ALL, "russian");
+        std::string s="csrd";
+        std::vector <std::string> vec={"computer", "science", "robotics", "memory"};
+        std::cout << "Результат функции acronym: " << acronym(s, vec, (int)vec.size()) << '\n';
+
+        std::string s1="knowledge";
+        std::string s2="experience";
+        std::cout << "Результат функции anagram: " << anagram(s1, s2) << '\n';
+
+        std::vector <std::string> vstr = {"apple", "lenovo", "samsung", "acer"}; 
+        std::vector <char> vchr = {'a', 'p', 'l', 'e', 'n', 'o', 'v', 'o', 'c', 'r', 'r', 'r'};
+        std::vector <int> vint;
+        for (int i=0; i<26; ++i){
+            vint.push_back(i+1);
+        }
+        std::cout << "Результат функции counting: " << counting(vstr, vchr, vint) << '\n';
+        return 0;
     }
-    std::vector <int> vecanswer = vecsum(vec1, vec2, std::max(vec1.size(),vec2.size()));
-    print(vecanswer, (int)vecanswer.size());
-    return 0;
-}
